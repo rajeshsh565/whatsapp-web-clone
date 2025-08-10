@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-export const socket = io("http://192.168.1.101:5234");
+export const socket = io();
 
 export const useSocket = (phone, onMessageReceived, onReceiverOffline, onStatusUpdate, onReceiverAFK) => {
   useEffect(() => {
