@@ -285,7 +285,7 @@ const Dashboard = () => {
         <Sidebar />
         {(!isMobile || !activeChat) && <ChatsList />}
         {(!isMobile || activeChat) && (
-          <div className={`flex flex-4 max-w-[calc(((100vw-4rem)/3)*2)]`}>
+          <div className="flex flex-4">
             <Chat />
           </div>
         )}
