@@ -31,6 +31,7 @@ const Dashboard = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [allChats, setAllChats] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [counterParty, setCounterParty] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const allChatsRef = useRef(allChats);
@@ -184,10 +185,13 @@ const Dashboard = () => {
     // fetch all users and chats at the session start and store in context
     (async () => {
       try {
+        setLoading(true);
         await fetchAllChats();
         await fetchAllUsers();
       } catch (error) {
         console.error("error fetching users: ", error);
+      } finally {
+        setLoading(false);
       }
     })();
     // preload chat bg wallpaper with invisible image element
@@ -255,7 +259,7 @@ const Dashboard = () => {
     }
   }, [activeChat]);
 
-  if (!allChats.length) {
+  if (loading) {
     return (
       <div className="h-screen w-screen flex justify-center items-center">
         <div className="loading loading-xl loading-ring"></div>
