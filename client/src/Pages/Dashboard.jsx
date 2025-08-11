@@ -116,8 +116,14 @@ const Dashboard = () => {
     const { msgObj, activeChat: active_chat } = payload;
     const chatId = active_chat.chatId;
     const all_chats = structuredClone(allChatsRef.current);
-    const chat = all_chats.find((chat) => chat.chatId === chatId);
-    chat.messages = [...chat.messages, msgObj];
+    let chat = all_chats.find((chat) => chat.chatId === chatId);
+    if(!chat){
+      // create new chat with the data received
+      chat = active_chat;
+      all_chats.push(chat);
+    }
+    // update the existing chat data     
+    chat.messages = [...(chat.messages??[]), msgObj];
     chat.lastMessage = {
       _id: msgObj._id,
       text: msgObj.text,
@@ -129,12 +135,13 @@ const Dashboard = () => {
       socket.emit("readMessage", {payload, newMsg: true, from: payload.msgObj.from});
     } else {
       socket.emit("receiverAFK", payload);
-      chat.unreadCount[user.phone] = (chat.unreadCount[user.phone] ?? 0) + 1;
+      chat.unreadCount = active_chat.unreadCount;
       msgObj.status = "delivered";
     }
     if (chat.selfChat) {
       chat.unreadCount[user.phone] = 0;
     }
+    all_chats.sort((a,b)=>new Date(b.lastTimestamp) - new Date(a.lastTimestamp));
     setAllChats(all_chats);
   };
 
